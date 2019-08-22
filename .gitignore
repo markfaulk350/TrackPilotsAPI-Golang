@@ -1,0 +1,15 @@
+# Binaries for programs and plugins
+main
+*.exe
+*.exe~
+
+# Test binary, build with `go test -c`
+*.test
+
+# Compressed
+main.zip
+
+# Terraform
+.terraform/
+*tfstate*
+*.tfvars
