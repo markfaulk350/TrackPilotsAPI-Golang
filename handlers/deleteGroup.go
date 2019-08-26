@@ -2,28 +2,38 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/markfaulk350/TrackPilotsAPI/entity"
 	"github.com/markfaulk350/TrackPilotsAPI/service"
+	"github.com/markfaulk350/TrackPilotsAPI/utils"
+	"github.com/rs/zerolog"
 )
 
 func DeleteGroup(svc service.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
+		logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 		params := mux.Vars(r)
 		groupID := params["id"]
 
-		err := svc.DeleteGroup(groupID)
-		if err != nil {
-			fmt.Println("Unable to delete group:", groupID)
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(entity.JsonResponse{Success: false, Payload: ("Unable to delete group: " + groupID)})
-			return
+		if err := svc.DeleteGroup(groupID); err != nil {
+			switch err.(type) {
+			case service.ProfileNotFoundError:
+				msg := "Delete group failed. Group not found"
+				logger.Error().Err(err).Msg(msg)
+				utils.RespondWithError(msg, err, http.StatusNotFound, w)
+				return
+			default:
+				msg := "Delete group failed"
+				logger.Error().Err(err).Msg(msg)
+				utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
+				return
+			}
 		}
 
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(entity.JsonResponse{Success: true, Payload: ("Group: " + groupID + " has been deleted.")})
 		return

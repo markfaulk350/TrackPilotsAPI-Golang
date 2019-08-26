@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"os"
 
@@ -27,13 +28,23 @@ func CreateUser(svc service.Service) http.HandlerFunc {
 
 		result, err := svc.CreateUser(*user)
 		if err != nil {
-			msg := "Adding user to database failed"
+			msg := "Create user failed"
 			logger.Debug().Err(err).Msg(msg)
 			utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
 			return
 		}
 
-		utils.RespondWithSuccess("User has been created", result, http.StatusCreated, w)
+		jsonObj, err := json.Marshal(entity.JsonResponse{Success: true, Payload: result})
+		if err != nil {
+			msg := "Failed marshaling json"
+			logger.Debug().Err(err).Msg(msg)
+			utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Location", fmt.Sprintf("/users/%v", result))
+		w.WriteHeader(http.StatusCreated)
+		w.Write(jsonObj)
 		return
 	}
 }

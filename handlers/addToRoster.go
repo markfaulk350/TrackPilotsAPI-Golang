@@ -4,37 +4,48 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/markfaulk350/TrackPilotsAPI/entity"
 	"github.com/markfaulk350/TrackPilotsAPI/service"
+	"github.com/markfaulk350/TrackPilotsAPI/utils"
+	"github.com/rs/zerolog"
 )
 
 func AddToRoster(svc service.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
-		w.Header().Set("Content-Type", "application/json")
+		logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 		decoder := json.NewDecoder(r.Body)
 
-		// create pointer to empty roster struct and fill with request body
 		roster := new(entity.Roster)
 		if err := decoder.Decode(roster); err != nil {
-			fmt.Println("Unable to add user to group roster. Bad req body.")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(entity.JsonResponse{Success: false, Payload: "Unable to add user to group roster. Bad req body."})
+			msg := "Bad request body"
+			logger.Debug().Err(err).Msg(msg)
+			utils.RespondWithError(msg, err, http.StatusBadRequest, w)
 			return
 		}
 
-		// send new roster struct to be inserted into database. Recieve new group ID as result
-		err := svc.AddToRoster(*roster)
+		result, err := svc.AddToRoster(*roster)
 		if err != nil {
-			fmt.Println("Could not add user to group in database.")
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(entity.JsonResponse{Success: false, Payload: "Could not add user to group in database."})
+			msg := "Failed to add user to group roster"
+			logger.Debug().Err(err).Msg(msg)
+			utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
 			return
 		}
 
+		jsonObj, err := json.Marshal(entity.JsonResponse{Success: true, Payload: result})
+		if err != nil {
+			msg := "Failed marshaling json"
+			logger.Debug().Err(err).Msg(msg)
+			utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Location", fmt.Sprintf("/roster/%v", result))
 		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(entity.JsonResponse{Success: true, Payload: "User added to group roster!"})
+		w.Write(jsonObj)
 		return
 	}
 }

@@ -21,7 +21,7 @@ type Service interface {
 	UpdateGroup(groupID string, group entity.Group) error
 	DeleteGroup(groupID string) error
 	// Roster
-	AddToRoster(roster entity.Roster) error
+	AddToRoster(roster entity.Roster) (string, error)
 	RemoveFromRoster(roster entity.Roster) error
 	GetGroupRoster(groupID string) ([]entity.User, error)
 	// Pings
@@ -40,4 +40,12 @@ type ServiceImpl struct {
 func New(config *dbclient.Config) Service {
 	DatabaseInstance := dbclient.New(config)
 	return ServiceImpl{DBClient: DatabaseInstance}
+}
+
+type ProfileNotFoundError struct {
+	msg string
+}
+
+func (e ProfileNotFoundError) Error() string {
+	return e.msg
 }
