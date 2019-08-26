@@ -1,7 +1,7 @@
 # TrackPilots API
 
 # Description
-TrackPilots API allows you to easily access multiple Pilots tracking data reguardless of which GPS tracker they have, in one easy to use standardized format. All it needs is your name, and tracking link. Pilots can create and join groups so that they can be tracked together using one API call, again reguardless of which device they use. 
+TrackPilots API allows you to easily access multiple Pilots tracking data reguardless of which satellite tracker they have, in one easy to use standardized format. All it needs is your name, and tracking link. Pilots can create and join groups so that they can be tracked together using one API call, again reguardless of which tracking device they use. 
 
 # Supported Devices
   - [Garmin Inreach Satellite Trackers](https://explore.garmin.com/en-US/inreach/)
@@ -15,11 +15,6 @@ TrackPilots API allows you to easily access multiple Pilots tracking data reguar
  - [FLARM](https://flarm.com/)
  - OGN/ICA
 
- 
-
-# 3rd Party Libraries / Packages Used
- - [github.com/gorilla](https://github.com/gorilla/mux)
- - [github.com/rs/zerolog](https://github.com/rs/zerolog)
- - [github.com/caarlos0/env](https://github.com/caarlos0/env)
- - [github.com/go-playground/validator](https://github.com/go-playground/validator)
- - [github.com/aws/aws-sdk-go](https://github.com/aws/aws-sdk-go)
+ # TODO List
+ - Use Zerolog to create better error logs for handler functions
+ - Create a function to send back helpful error responses in json over http

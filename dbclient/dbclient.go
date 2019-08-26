@@ -15,10 +15,9 @@ type Config struct {
 }
 
 func New(c *Config) *sql.DB {
-	driverName := "mysql"
 	dataSourceName := (*c).User + ":" + (*c).Password + "@tcp(" + (*c).Session + ":3306)/" + (*c).Table + "?charset=utf8"
 
-	DB, connectionError := sql.Open(driverName, dataSourceName)
+	DB, connectionError := sql.Open("mysql", dataSourceName)
 	if connectionError != nil {
 		panic(connectionError.Error())
 	}

@@ -15,6 +15,7 @@ import (
 
 func Start() {
 
+	// Comment for Prod
 	CONN_PORT := os.Getenv("CONN_PORT")
 
 	config := dbclient.Config{}
@@ -45,8 +46,12 @@ func Start() {
 	// Tracking Data
 	s.HandleFunc("/grouptrackingdata/{id}", handlers.GetGroupTrackingData(svc)).Methods(http.MethodGet)
 
+	// Comment for Prod
 	fmt.Println("Server listening on port", CONN_PORT)
 	log.Fatal(http.ListenAndServe(":"+CONN_PORT, r))
+
+	// Uncomment for Prod
+	// log.Fatal(gateway.ListenAndServe("", r))
 
 }
 
