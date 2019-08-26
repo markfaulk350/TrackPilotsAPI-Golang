@@ -2,50 +2,42 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/markfaulk350/TrackPilotsAPI/entity"
 	"github.com/markfaulk350/TrackPilotsAPI/service"
+	"github.com/markfaulk350/TrackPilotsAPI/utils"
+	"github.com/rs/zerolog"
 )
 
 func UpdateGroup(svc service.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
-		w.Header().Set("Content-Type", "application/json")
+		logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 		decoder := json.NewDecoder(r.Body)
 
 		params := mux.Vars(r)
 		groupID := params["id"]
 
-		// create pointer to empty group struct and fill with request body
 		group := new(entity.Group)
 		if err := decoder.Decode(group); err != nil {
-			fmt.Println("Unable to update group. Bad req body.")
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(entity.JsonResponse{Success: false, Payload: "Unable to update group. Bad req body."})
+			msg := "Bad request body"
+			logger.Debug().Err(err).Msg(msg)
+			utils.RespondWithError(msg, err, http.StatusBadRequest, w)
 			return
 		}
 
-		// send updated group struct to be inserted into database.
-		err := svc.UpdateGroup(groupID, *group)
-		if err != nil {
-			fmt.Println("Could not update group info.")
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(entity.JsonResponse{Success: false, Payload: "Could not update group info."})
+		if err := svc.UpdateGroup(groupID, *group); err != nil {
+			msg := "Update group failed"
+			logger.Error().Err(err).Msg(msg)
+			utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
 			return
 		}
 
-		// Create []byte from JsonResponse that returns success message
-		jsonObj, err := json.Marshal(entity.JsonResponse{Success: true, Payload: ("Successfully updated group: " + groupID)})
-		if err != nil {
-			fmt.Println("Failed marshalling json after updating group.")
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}
-
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write(jsonObj)
+		return
 	}
 }

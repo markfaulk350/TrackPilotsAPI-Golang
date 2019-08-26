@@ -1,32 +1,40 @@
 package handlers
 
 import (
-	"encoding/json"
-	"fmt"
+	"database/sql"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog"
 
-	"github.com/markfaulk350/TrackPilotsAPI/entity"
 	"github.com/markfaulk350/TrackPilotsAPI/service"
+	"github.com/markfaulk350/TrackPilotsAPI/utils"
 )
 
 func DeleteUser(svc service.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
+		logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 		params := mux.Vars(r)
 		userID := params["id"]
 
-		err := svc.DeleteUser(userID)
-		if err != nil {
-			fmt.Println("Unable to delete user:", userID)
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(entity.JsonResponse{Success: false, Payload: ("Unable to delete user: " + userID)})
-			return
+		if err := svc.DeleteUser(userID); err != nil {
+			switch err {
+			case sql.ErrNoRows:
+				msg := "Delete user failed. User not found"
+				logger.Error().Err(err).Msg(msg)
+				utils.RespondWithError(msg, err, http.StatusNotFound, w)
+				return
+			default:
+				msg := "Delete user failed"
+				logger.Error().Err(err).Msg(msg)
+				utils.RespondWithError(msg, err, http.StatusInternalServerError, w)
+				return
+			}
 		}
 
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(entity.JsonResponse{Success: true, Payload: ("User: " + userID + " has been deleted.")})
 		return
 	}
 }

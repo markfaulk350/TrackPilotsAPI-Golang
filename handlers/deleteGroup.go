@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"encoding/json"
+	"database/sql"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
-	"github.com/markfaulk350/TrackPilotsAPI/entity"
 	"github.com/markfaulk350/TrackPilotsAPI/service"
 	"github.com/markfaulk350/TrackPilotsAPI/utils"
 	"github.com/rs/zerolog"
@@ -19,8 +18,8 @@ func DeleteGroup(svc service.Service) http.HandlerFunc {
 		groupID := params["id"]
 
 		if err := svc.DeleteGroup(groupID); err != nil {
-			switch err.(type) {
-			case service.ProfileNotFoundError:
+			switch err {
+			case sql.ErrNoRows:
 				msg := "Delete group failed. Group not found"
 				logger.Error().Err(err).Msg(msg)
 				utils.RespondWithError(msg, err, http.StatusNotFound, w)
@@ -35,7 +34,6 @@ func DeleteGroup(svc service.Service) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(entity.JsonResponse{Success: true, Payload: ("Group: " + groupID + " has been deleted.")})
 		return
 	}
 }

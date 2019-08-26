@@ -55,3 +55,13 @@ type Ping struct {
 	TxtMsg      string  `json:"txtMsg"`
 	IsEmergency string  `json:"isEmergency"`
 }
+
+type CreateUserResult struct {
+	UserID string `json:"UserID"`
+}
+type CreateGroupResult struct {
+	GroupID string `json:"GroupID"`
+}
+type CreateRosterResult struct {
+	RosterID string `json:"RosterID"`
+}

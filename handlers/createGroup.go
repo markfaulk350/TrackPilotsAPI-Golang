@@ -35,7 +35,7 @@ func CreateGroup(svc service.Service) http.HandlerFunc {
 			return
 		}
 
-		jsonObj, err := json.Marshal(entity.JsonResponse{Success: true, Payload: result})
+		jsonObj, err := json.Marshal(entity.CreateGroupResult{GroupID: result})
 		if err != nil {
 			msg := "Failed marshaling json"
 			logger.Debug().Err(err).Msg(msg)

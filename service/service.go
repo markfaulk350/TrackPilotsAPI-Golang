@@ -41,11 +41,3 @@ func New(config *dbclient.Config) Service {
 	DatabaseInstance := dbclient.New(config)
 	return ServiceImpl{DBClient: DatabaseInstance}
 }
-
-type ProfileNotFoundError struct {
-	msg string
-}
-
-func (e ProfileNotFoundError) Error() string {
-	return e.msg
-}
