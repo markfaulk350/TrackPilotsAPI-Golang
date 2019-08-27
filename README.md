@@ -14,7 +14,3 @@ TrackPilots API allows you to easily access multiple Pilots tracking data reguar
  - [Yellow Brick Satellite Trackers](https://www.ybtracking.com/)
  - [FLARM](https://flarm.com/)
  - OGN/ICA
-
- # TODO List
- - Use Zerolog to create better error logs for handler functions
- - Create a function to send back helpful error responses in json over http

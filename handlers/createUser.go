@@ -34,7 +34,7 @@ func CreateUser(svc service.Service) http.HandlerFunc {
 			return
 		}
 
-		jsonObj, err := json.Marshal(entity.CreateUserResult{UserID: result})
+		jsonObj, err := json.Marshal(result)
 		if err != nil {
 			msg := "Failed marshaling json"
 			logger.Debug().Err(err).Msg(msg)
