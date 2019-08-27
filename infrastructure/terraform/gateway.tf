@@ -1,58 +1,44 @@
-resource "aws_api_gateway_rest_api" "example" {
-  name        = "ServerlessExample"
-  description = "Terraform Serverless Application Example"
+resource "aws_api_gateway_rest_api" "TrackPilotsAPI" {
+  name        = "TrackPilotsAPI-gateway"
+  description = "This is my API description"
 }
 
-resource "aws_api_gateway_resource" "proxy" {
-  rest_api_id = "${aws_api_gateway_rest_api.example.id}"
-  parent_id   = "${aws_api_gateway_rest_api.example.root_resource_id}"
-  path_part   = "{proxy+}"
-}
+resource "aws_api_gateway_deployment" "deployment_v1" {
+  rest_api_id = "${aws_api_gateway_rest_api.TrackPilotsAPI.id}"
+  stage_name  = "api"
 
-resource "aws_api_gateway_method" "proxy" {
-  rest_api_id   = "${aws_api_gateway_rest_api.example.id}"
-  resource_id   = "${aws_api_gateway_resource.proxy.id}"
-  http_method   = "ANY"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "lambda" {
-  rest_api_id = "${aws_api_gateway_rest_api.example.id}"
-  resource_id = "${aws_api_gateway_method.proxy.resource_id}"
-  http_method = "${aws_api_gateway_method.proxy.http_method}"
-
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.example.invoke_arn}"
-}
-
-resource "aws_api_gateway_method" "proxy_root" {
-  rest_api_id   = "${aws_api_gateway_rest_api.example.id}"
-  resource_id   = "${aws_api_gateway_rest_api.example.root_resource_id}"
-  http_method   = "ANY"
-  authorization = "NONE"
-}
-
-resource "aws_api_gateway_integration" "lambda_root" {
-  rest_api_id = "${aws_api_gateway_rest_api.example.id}"
-  resource_id = "${aws_api_gateway_method.proxy_root.resource_id}"
-  http_method = "${aws_api_gateway_method.proxy_root.http_method}"
-
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = "${aws_lambda_function.example.invoke_arn}"
-}
-
-resource "aws_api_gateway_deployment" "example" {
   depends_on = [
-    "aws_api_gateway_integration.lambda",
-    "aws_api_gateway_integration.lambda_root",
+    "aws_api_gateway_integration.TrackPilotsAPI",
   ]
-
-  rest_api_id = "${aws_api_gateway_rest_api.example.id}"
-  stage_name  = "test"
 }
 
-output "base_url" {
-  value = "${aws_api_gateway_deployment.example.invoke_url}"
+resource "aws_api_gateway_resource" "TrackPilotsAPIProxy" {
+  parent_id   = "${aws_api_gateway_rest_api.TrackPilotsAPI.root_resource_id}"
+  path_part   = "{proxy+}"
+  rest_api_id = "${aws_api_gateway_rest_api.TrackPilotsAPI.id}"
+}
+
+resource "aws_api_gateway_method" "TrackPilotsAPI" {
+  http_method      = "ANY"
+  resource_id      = "${aws_api_gateway_resource.TrackPilotsAPIProxy.id}"
+  rest_api_id      = "${aws_api_gateway_rest_api.TrackPilotsAPI.id}"
+  authorization    = "NONE"
+  api_key_required = false
+
+  request_parameters = {
+    "method.request.path.proxy" = true
+  }
+}
+
+resource "aws_api_gateway_integration" "TrackPilotsAPI" {
+  http_method             = "${aws_api_gateway_method.TrackPilotsAPI.http_method}"
+  resource_id             = "${aws_api_gateway_resource.TrackPilotsAPIProxy.id}"
+  rest_api_id             = "${aws_api_gateway_rest_api.TrackPilotsAPI.id}"
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = "${aws_lambda_function.TrackPilotsAPI.invoke_arn}"
+
+  depends_on = [
+    "aws_api_gateway_method.TrackPilotsAPI",
+  ]
 }

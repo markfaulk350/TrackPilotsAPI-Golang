@@ -17,6 +17,7 @@ import (
 
 func Start() {
 	// GOOS=linux go build -o main
+	// zip -r main.zip main
 
 	// Comment for Prod
 	// CONN_PORT := os.Getenv("CONN_PORT")
