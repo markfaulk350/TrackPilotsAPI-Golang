@@ -62,7 +62,10 @@ func Start() {
 	// or with gzip
 	// log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CompressHandler(r)))
 	// or with CORS
-	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
+	// log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
+
+	// or both
+	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(gmuxHandlers.CompressHandler(r))))
 
 	// With CORS
 	// log.Fatal(http.ListenAndServe(":"+CONN_PORT, gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
