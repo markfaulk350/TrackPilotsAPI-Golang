@@ -1,12 +1,14 @@
 package app
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"os"
 
+	"github.com/apex/gateway"
 	"github.com/caarlos0/env"
+
+	// gmuxHandlers "github.com/gorilla/handlers"
+	gmuxHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/markfaulk350/TrackPilotsAPI/dbclient"
 	"github.com/markfaulk350/TrackPilotsAPI/handlers"
@@ -16,11 +18,15 @@ import (
 func Start() {
 
 	// Comment for Prod
-	CONN_PORT := os.Getenv("CONN_PORT")
+	// CONN_PORT := os.Getenv("CONN_PORT")
 
 	config := dbclient.Config{}
 	env.Parse(&config)
 	svc := service.New(&config)
+
+	// allowedHeaders := gmuxHandlers.AllowedHeaders([]string{"X-Requested-With"})
+	// allowedOrigins := gmuxHandlers.AllowedOrigins([]string{"*"})
+	// allowedMethods := gmuxHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	r := mux.NewRouter()
 	s := r.PathPrefix("/trackingAPI/v1").Subrouter()
@@ -47,11 +53,19 @@ func Start() {
 	s.HandleFunc("/grouptrackingdata/{id}", handlers.GetGroupTrackingData(svc)).Methods(http.MethodGet)
 
 	// Comment for Prod
-	fmt.Println("Server listening on port", CONN_PORT)
-	log.Fatal(http.ListenAndServe(":"+CONN_PORT, r))
+	// fmt.Println("Server listening on port", CONN_PORT)
+	// log.Fatal(http.ListenAndServe(":"+CONN_PORT, r))
 
 	// Uncomment for Prod
 	// log.Fatal(gateway.ListenAndServe("", r))
+	// or with gzip
+	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CompressHandler(r)))
+
+	// With CORS
+	// log.Fatal(http.ListenAndServe(":"+CONN_PORT, gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
+
+	// With gzip
+	// log.Fatal(http.ListenAndServe(":"+CONN_PORT, gmuxHandlers.CompressHandler(r)))
 
 }
 

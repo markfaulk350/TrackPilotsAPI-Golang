@@ -1,9 +1,9 @@
 SELECT DATABASE();
 SHOW DATABASES;
 
-DROP DATABASE IF EXISTS test_xc_db;
-CREATE DATABASE test_xc_db;
-USE test_xc_db;
+DROP DATABASE IF EXISTS trackpilots_db;
+CREATE DATABASE trackpilots_db;
+USE trackpilots_db;
 
 CREATE TABLE pilots(
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,7 +59,7 @@ CREATE TABLE groups_have_pilots(
 );
 
 
-INSERT INTO `test_xc_db`.`pilots` (`fName`, `lName`, `email`, `phone`, `country`, `trkLink`, `trkType`, `gldBrand`, `gldMake`, `gldColor`) VALUES
+INSERT INTO `trackpilots_db`.`pilots` (`fName`, `lName`, `email`, `phone`, `country`, `trkLink`, `trkType`, `gldBrand`, `gldMake`, `gldColor`) VALUES
 ('Mark', 'Faulkner', 'markfaulk350@gmail.com', '1(760)846-0475', 'USA', 'https://us0.inreach.garmin.com/Feed/Share/markfaulk', 'inreach', 'Advance', 'Epsilon 8', 'lime green,blue'),
 ('Brad', 'Stevenson', 'brad@email.com', '1(766)445-0344', 'USA', 'https://us0.inreach.garmin.com/Feed/Share/bradstevenson', 'inreach', 'Ozone', 'Zeno', 'yellow,black'),
 ('Chris', 'Cote', 'cote@email.com', '1(800)445-03433', 'USA', 'https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0OQC2EvSbXKVozJGR0Sg7vE8HYfvzdyps', 'spot', 'Ozone', 'Enzo 3', 'red,orange'),
@@ -69,8 +69,8 @@ INSERT INTO `test_xc_db`.`pilots` (`fName`, `lName`, `email`, `phone`, `country`
 -- ('Corina', 'Beerly', 'beerly@email.com', 'https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/0k9ZgmHPvQsHIuvUZEbx0WG50MHUsNE3f', 'spot'),
 -- ('Mateo', 'Caicedo', 'Mateo@email.com', 'https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/093XBo8oPVqocZZ9gTn9NZOlqQ4B6pA6Q', 'spot');
 
-INSERT INTO `test_xc_db`.`flying_groups` (`groupName`, `creatorId`, `region`, `info`, `radioFrq`) VALUES ('San Diego Paragliding', '1', 'San Diego, Ca', 'Southern California Paragliding Group info', '144-495');
-INSERT INTO `test_xc_db`.`flying_groups` (`groupName`, `creatorId`, `region`, `info`, `radioFrq`) VALUES ('Red Bull X-Alps 2020', '2', 'Europe', 'more info', '144-495');
+INSERT INTO `trackpilots_db`.`flying_groups` (`groupName`, `creatorId`, `region`, `info`, `radioFrq`) VALUES ('San Diego Paragliding', '1', 'San Diego, Ca', 'Southern California Paragliding Group info', '144-495');
+INSERT INTO `trackpilots_db`.`flying_groups` (`groupName`, `creatorId`, `region`, `info`, `radioFrq`) VALUES ('Red Bull X-Alps 2020', '2', 'Europe', 'more info', '144-495');
 
-INSERT INTO `test_xc_db`.`groups_have_pilots` (`group_id`, `pilot_id`) VALUES ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4');
+INSERT INTO `trackpilots_db`.`groups_have_pilots` (`group_id`, `pilot_id`) VALUES ('1', '1'), ('1', '2'), ('1', '3'), ('1', '4');
 

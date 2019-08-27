@@ -1,8 +1,8 @@
-resource "aws_lambda_function" "example" {
-  function_name = "trackPilotsAPI"
-  s3_bucket = "trackpilots"
-  s3_key = "main.zip"
+resource "aws_lambda_function" "TrackPilotsAPI" {
+  function_name = "TrackPilotsAPI"
   handler = "main"
+  filename = "../../main.zip"
+  source_code_hash = "${base64sha256(file("../../main.zip"))}"
   runtime = "go1.x"
   timeout = "30"
   role = "${aws_iam_role.lambda_exec.arn}"
