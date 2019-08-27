@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -20,8 +19,8 @@ func GetUser(svc service.Service) http.HandlerFunc {
 
 		result, err := svc.GetUser(userID)
 		if err != nil {
-			switch err {
-			case sql.ErrNoRows:
+			switch err.(type) {
+			case service.ProfileNotFoundError:
 				msg := "User not found"
 				logger.Error().Err(err).Msg(msg)
 				utils.RespondWithError(msg, err, http.StatusNotFound, w)

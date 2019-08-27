@@ -16,7 +16,7 @@ func (svc ServiceImpl) GetGroup(groupID string) (entity.Group, error) {
 	switch err := row.Scan(&g.ID, &g.Groupname, &g.Creatorid, &g.Region, &g.Info, &g.Radio, &g.Created); err {
 	case sql.ErrNoRows:
 		fmt.Println("Could not find group with ID of", groupID)
-		return entity.Group{}, err
+		return entity.Group{}, ProfileNotFoundError{"Could not find group with ID: " + groupID}
 	case nil:
 		//fmt.Println(g)
 		return g, nil
