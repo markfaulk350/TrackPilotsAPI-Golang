@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 
 	"github.com/markfaulk350/TrackPilotsAPI/entity"
 )
@@ -10,14 +9,12 @@ import (
 func (svc ServiceImpl) MakeApiCall(user entity.User, whenToQueryFrom int64) error {
 	switch user.Trktype {
 	case "spot":
-		//fmt.Println("Make API call to SPOT")
 		svc.RetreiveDataFromSpot(user, whenToQueryFrom)
 	case "inreach":
-		//fmt.Println("Make API call to Garmin Inreach")
 		svc.RetreiveDataFromGarmin(user, whenToQueryFrom)
 	default:
-		fmt.Println("Problem making API call. Tracker type doesnt seem to be of type Garmin Inreach or SPOT.")
-		return errors.New("problem making API call. Tracker type doesnt seem to match Garmin Inreach or SPOT")
+		svc.Logger.Error().Str("Incorrrect Tracker Type:", user.Trktype).Msg("Tracker is not of type Inreach or SPOT")
+		return errors.New("Tracker is not of type Inreach or SPOT")
 	}
 	return nil
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/markfaulk350/TrackPilotsAPI/entity"
 )
@@ -15,13 +14,12 @@ func (svc ServiceImpl) GetGroup(groupID string) (entity.Group, error) {
 
 	switch err := row.Scan(&g.ID, &g.Groupname, &g.Creatorid, &g.Region, &g.Info, &g.Radio, &g.Created); err {
 	case sql.ErrNoRows:
-		fmt.Println("Could not find group with ID of", groupID)
+		svc.Logger.Error().Err(err).Msg("Failed to retrieve group. Could not find group with ID: " + groupID)
 		return entity.Group{}, ProfileNotFoundError{"Could not find group with ID: " + groupID}
 	case nil:
-		//fmt.Println(g)
 		return g, nil
 	default:
-		fmt.Println("Unable to grab groups data.")
+		svc.Logger.Error().Err(err).Msg("Failed to retrieve group")
 		return entity.Group{}, err
 	}
 }
