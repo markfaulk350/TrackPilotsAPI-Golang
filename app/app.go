@@ -16,6 +16,7 @@ import (
 )
 
 func Start() {
+	// GOOS=linux go build -o main
 
 	// Comment for Prod
 	// CONN_PORT := os.Getenv("CONN_PORT")
@@ -24,9 +25,9 @@ func Start() {
 	env.Parse(&config)
 	svc := service.New(&config)
 
-	// allowedHeaders := gmuxHandlers.AllowedHeaders([]string{"X-Requested-With"})
-	// allowedOrigins := gmuxHandlers.AllowedOrigins([]string{"*"})
-	// allowedMethods := gmuxHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
+	allowedHeaders := gmuxHandlers.AllowedHeaders([]string{"X-Requested-With"})
+	allowedOrigins := gmuxHandlers.AllowedOrigins([]string{"*"})
+	allowedMethods := gmuxHandlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"})
 
 	r := mux.NewRouter()
 	s := r.PathPrefix("/trackingAPI/v1").Subrouter()
@@ -59,7 +60,9 @@ func Start() {
 	// Uncomment for Prod
 	// log.Fatal(gateway.ListenAndServe("", r))
 	// or with gzip
-	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CompressHandler(r)))
+	// log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CompressHandler(r)))
+	// or with CORS
+	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
 
 	// With CORS
 	// log.Fatal(http.ListenAndServe(":"+CONN_PORT, gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
