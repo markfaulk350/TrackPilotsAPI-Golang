@@ -11,4 +11,7 @@ build:
 zip: 
 	zip -r main.zip $(BINARY_NAME)
 
+local:
+	go run main.go
+
 deploy: clean build zip
