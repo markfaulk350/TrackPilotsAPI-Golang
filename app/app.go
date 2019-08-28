@@ -16,8 +16,6 @@ import (
 )
 
 func Start() {
-	// GOOS=linux go build -o main
-	// zip -r main.zip main
 
 	// Comment for Prod
 	// CONN_PORT := os.Getenv("CONN_PORT")
@@ -64,7 +62,6 @@ func Start() {
 	// log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CompressHandler(r)))
 	// or with CORS
 	// log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
-
 	// or both
 	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(gmuxHandlers.CompressHandler(r))))
 
