@@ -6,7 +6,7 @@ clean:
 	rm -f $(BINARY_NAME) main.zip
 
 build: 
-	GOOS=linux go build -o main
+	GOOS=linux go build -o $(BINARY_NAME)
 
 zip: 
 	zip -r main.zip $(BINARY_NAME)
