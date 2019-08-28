@@ -16,7 +16,7 @@ type Config struct {
 }
 
 func New(c *Config) *sql.DB {
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 	dataSourceName := (*c).User + ":" + (*c).Password + "@tcp(" + (*c).Session + ":3306)/" + (*c).Table + "?charset=utf8"
 
