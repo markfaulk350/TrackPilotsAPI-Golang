@@ -2,9 +2,10 @@ package dbclient
 
 import (
 	"database/sql"
-	"fmt"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/rs/zerolog"
 )
 
 type Config struct {
@@ -15,12 +16,15 @@ type Config struct {
 }
 
 func New(c *Config) *sql.DB {
+	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
+
 	dataSourceName := (*c).User + ":" + (*c).Password + "@tcp(" + (*c).Session + ":3306)/" + (*c).Table + "?charset=utf8"
 
 	DB, connectionError := sql.Open("mysql", dataSourceName)
 	if connectionError != nil {
-		panic(connectionError.Error())
+		logger.Error().Err(connectionError).Msg("Failed to connect to MySQL Database")
 	}
-	fmt.Println("You are now connected to a MySQL Database!")
+
+	logger.Info().Msg("Successfuly connected to MySQL Database")
 	return DB
 }
