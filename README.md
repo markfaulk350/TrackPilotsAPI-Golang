@@ -18,10 +18,11 @@ TrackPilots API allows you to easily access multiple Pilots tracking data regard
  - OGN/ICA
 
 # TODO
+ - Configure Terraform to deploy AWS MySQL DB and send session endpoint to the lambda function
  - Connect lambda function to CloudWatch logs via Terraform
- - Fix lambda function cold start issue that returns (500 Internal Server Error) when getting group tracking data for first time.
- - Add serverside validation for creation of users, groups, pings, etc.
+ - Fix lambda function cold start issue that returns (500 Internal Server Error) when getting group tracking data for the first time.
+ - Add serverside validation for the creation of users, groups, pings, etc.
  - Refactor the service functions that retrieve and save tracking data. Combine all DB insert queries into one large query to save time and money.
- - Figure out how and when to calculate a pilots altitude AGL.
- - Create handler and service function that creates all database tables without having to log directly into the DB from mysql workbench.
+ - Figure out how and when to calculate a pilot's altitude AGL.
+ - Create a handler and service function that creates all database tables without having to log directly into the DB from MySQL workbench.
  - Create short youtube tutorials for each tracker type explaining how to set up and get the correct tracking link.
