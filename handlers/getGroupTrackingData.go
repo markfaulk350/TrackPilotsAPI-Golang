@@ -12,6 +12,9 @@ import (
 
 func GetGroupTrackingData(svc service.Service) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		// Eventually I need to take in parameters to determine how much tracking data I want to send back for a given time period
+		// For now Im just returning all tracking data
+
 		w.Header().Set("Content-Type", "application/json")
 
 		params := mux.Vars(r)
