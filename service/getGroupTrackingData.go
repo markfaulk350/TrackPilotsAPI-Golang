@@ -36,5 +36,6 @@ func (svc ServiceImpl) GetGroupTrackingData(groupID string) ([]entity.UserAndPin
 		}
 		usersAndPings = append(usersAndPings, thisUserWithPings)
 	}
+
 	return usersAndPings, nil
 }

@@ -29,10 +29,6 @@ type Service interface {
 	// Pings
 	GetUsersPings(userID int) ([]entity.Ping, error)
 	GetGroupTrackingData(groupID string) ([]entity.UserAndPings, error)
-	DiscoverNewTrackingData(users []entity.User) error
-	MakeApiCall(user entity.User, whenToQueryFrom int64) error
-	RetreiveDataFromSpot(user entity.User, whenToQueryFrom int64) error
-	RetreiveDataFromGarmin(user entity.User, whenToQueryFrom int64) error
 }
 
 type ServiceImpl struct {

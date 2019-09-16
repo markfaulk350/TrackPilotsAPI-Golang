@@ -9,6 +9,7 @@ import (
 
 	// gmuxHandlers "github.com/gorilla/handlers"
 	gmuxHandlers "github.com/gorilla/handlers"
+
 	"github.com/gorilla/mux"
 	"github.com/markfaulk350/TrackPilotsAPI/dbclient"
 	"github.com/markfaulk350/TrackPilotsAPI/handlers"
@@ -63,6 +64,7 @@ func Start() {
 	// or with CORS
 	// log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(r)))
 	// or both
+
 	log.Fatal(gateway.ListenAndServe("", gmuxHandlers.CORS(allowedHeaders, allowedOrigins, allowedMethods)(gmuxHandlers.CompressHandler(r))))
 
 	// With CORS
