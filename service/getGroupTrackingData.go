@@ -10,14 +10,11 @@ import (
 func (svc ServiceImpl) GetGroupTrackingData(groupID string, timeSpan string) ([]entity.UserAndPings, error) {
 
 	currentUnix := time.Now().Unix()
-
-	var pingSQLStatement = `SELECT id, unixTime, lat, lng, alt, agl, velocity, heading, txtMsg, isEmergency FROM pings WHERE pilot_id=? AND unixTime >=? ORDER BY unixTime DESC;`
 	var queryFrom int64
 	var queryForMostRecent bool
 
 	switch timeSpan {
 	case "mostrecent":
-		pingSQLStatement = `SELECT id, MAX(unixTime), lat, lng, alt, agl, velocity, heading, txtMsg, isEmergency FROM pings WHERE pilot_id=?;`
 		queryForMostRecent = true
 	case "1hr":
 		queryFrom = currentUnix - 3600
@@ -30,6 +27,9 @@ func (svc ServiceImpl) GetGroupTrackingData(groupID string, timeSpan string) ([]
 		queryForMostRecent = false
 	case "1week":
 		queryFrom = currentUnix - 604800
+		queryForMostRecent = false
+	case "all":
+		queryFrom = 1
 		queryForMostRecent = false
 	default:
 		return nil, errors.New("time span has not been specified")
@@ -49,6 +49,7 @@ func (svc ServiceImpl) GetGroupTrackingData(groupID string, timeSpan string) ([]
 
 			thisUserWithPings.User = user
 
+			pingSQLStatement := `SELECT id, unixTime, lat, lng, alt, agl, velocity, heading, txtMsg, isEmergency FROM pings WHERE pilot_id=? AND unixTime >=? ORDER BY unixTime DESC;`
 			rows, err := svc.DBClient.Query(pingSQLStatement, user.ID, queryFrom)
 			if err != nil {
 				svc.Logger.Error().Err(err).Msg("Failed to retrieve user tracking data while retriving group tracking data")
@@ -71,6 +72,7 @@ func (svc ServiceImpl) GetGroupTrackingData(groupID string, timeSpan string) ([]
 
 			thisUserWithPings.User = user
 
+			pingSQLStatement := `SELECT id, unixTime, lat, lng, alt, agl, velocity, heading, txtMsg, isEmergency FROM pings WHERE pilot_id=? ORDER BY unixTime DESC LIMIT 1;`
 			rows, err := svc.DBClient.Query(pingSQLStatement, user.ID)
 			if err != nil {
 				svc.Logger.Error().Err(err).Msg("Failed to retrieve user tracking data while retriving group tracking data")
