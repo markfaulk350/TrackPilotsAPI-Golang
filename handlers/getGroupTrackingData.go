@@ -19,8 +19,9 @@ func GetGroupTrackingData(svc service.Service) http.HandlerFunc {
 
 		params := mux.Vars(r)
 		groupID := params["id"]
+		timeSpan := params["timeSpan"]
 
-		result, err := svc.GetGroupTrackingData(groupID)
+		result, err := svc.GetGroupTrackingData(groupID, timeSpan)
 		if err != nil {
 			fmt.Println("Get groups users pings failed.")
 			w.WriteHeader(http.StatusInternalServerError)

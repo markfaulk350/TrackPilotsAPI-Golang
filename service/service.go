@@ -28,7 +28,7 @@ type Service interface {
 	GetGroupRoster(groupID string) ([]entity.User, error)
 	// Pings
 	GetUsersPings(userID int) ([]entity.Ping, error)
-	GetGroupTrackingData(groupID string) ([]entity.UserAndPings, error)
+	GetGroupTrackingData(groupID string, timeSpan string) ([]entity.UserAndPings, error)
 }
 
 type ServiceImpl struct {

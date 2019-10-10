@@ -51,7 +51,7 @@ func Start() {
 	s.HandleFunc("/roster", handlers.RemoveFromRoster(svc)).Methods(http.MethodDelete)
 	s.HandleFunc("/roster/{id}", handlers.GetGroupRoster(svc)).Methods(http.MethodGet)
 	// Tracking Data
-	s.HandleFunc("/grouptrackingdata/{id}", handlers.GetGroupTrackingData(svc)).Methods(http.MethodGet)
+	s.HandleFunc("/grouptrackingdata/{id}/{timeSpan}", handlers.GetGroupTrackingData(svc)).Methods(http.MethodGet)
 
 	// Comment for Prod
 	// fmt.Println("Server listening on port", CONN_PORT)
