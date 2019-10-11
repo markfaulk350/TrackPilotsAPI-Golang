@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"sort"
 	"time"
 
 	"github.com/markfaulk350/TrackPilotsAPI/entity"
@@ -90,13 +89,6 @@ func (svc ServiceImpl) GetGroupTrackingData(groupID string, timeSpan string) ([]
 			}
 			usersAndPings = append(usersAndPings, thisUserWithPings)
 		}
-
 	}
-
-	// Here we sort users by most recent location ping
-	sort.SliceStable(usersAndPings, func(i, j int) bool {
-		return usersAndPings[i].Pings[0].UnixTime > usersAndPings[j].Pings[0].UnixTime
-	})
-
 	return usersAndPings, nil
 }
