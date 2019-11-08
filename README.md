@@ -17,6 +17,9 @@ TrackPilots API allows you to easily access multiple Pilots tracking data regard
  - [FLARM](https://flarm.com/)
  - OGN/ICA
 
+# App Structure
+  ![App Structure](docs/appStructure.png)
+
 # TODO
  - Configure Terraform to deploy AWS MySQL DB and send session endpoint to the lambda function
  - Connect lambda function to CloudWatch logs via Terraform
