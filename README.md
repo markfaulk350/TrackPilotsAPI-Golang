@@ -1,4 +1,4 @@
-# TrackPilots API
+# TrackPilots API Golang
 
 # Description
 TrackPilots API allows you to easily access multiple Pilots tracking data regardless of which satellite tracker they have, in one easy to use standardized format. All it needs is your name and tracking link. Pilots can create and join groups so that they can be tracked together using one API call, again regardless of which tracking device they use.
